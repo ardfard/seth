@@ -1,14 +1,16 @@
-require 'seth/store/memory'
-require 'seth/store/mongo'
 
-module Seth
-  def self.create_store(config)
+module Seth::Store
+  def self.create(config)
     case config[:store]
     when :mongo
-      mongo_store = MongoStore.new(config[:mongo_host])
+      require 'seth/store/mongo'
+      mongo_store = Seth::Store::Mongo.new(config)
       return mongo_store
     when :in_memory
-      return MemoryStore.new
+      require 'seth/store/in_memory'
+      return Seth::Store::InMemory.new
+    when :tomb
+      return Seth::Store::Tomb.new(config)
     end
   end
 end

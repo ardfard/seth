@@ -10,6 +10,7 @@ in
 stdenv.mkDerivation {
   name = "seth";
   buildInputs = [
+    libxml2
     ruby
   ];
   shellHook = ''

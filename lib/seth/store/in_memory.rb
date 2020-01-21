@@ -1,4 +1,4 @@
-class InMemory
+class Seth::Store::InMemory
 
   def initialize()
     @_store = {}
