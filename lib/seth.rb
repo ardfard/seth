@@ -1,0 +1,35 @@
+require "seth/version"
+
+class Seth
+
+  
+
+  def initialize()
+    config = {
+      store: :in_memory
+    }
+
+    yield config
+    @_store = Seth.create_store(config)
+  end
+
+  # set value for key
+  def set(key, value)
+    Rails.cache.delete(key)
+    @_store.set(key, value)
+  end
+
+  # fetch value given key, return default if value not exists
+  def fetch(key, default)
+    Rails.cache.fetch(key) do 
+      val = @_store.get(key)
+      if val.present? 
+        val
+      else
+        @_store.set(key, default)
+        default
+      end
+    end
+  end
+
+end
