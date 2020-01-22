@@ -5,6 +5,4 @@ RSpec.describe Seth do
     expect(Seth::VERSION).not_to be nil
   end
 
-  
-
 end

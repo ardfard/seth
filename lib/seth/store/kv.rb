@@ -1,15 +1,13 @@
 require 'rb-inotify'
 
-class Seth::Store::Tomb
+module Seth
+module Store
+class KV
 
   def initialize(config)
     @_local_cache = {}
     @_config_path = config[:path]
-    Thread.new do
-      notifier = INotify::Notifier.new
-      notifier.watch(@_config_path, :modify) { update_cache! }
-      notifier.run
-    end
+    start_watching_config
     update_cache!
   end
 
@@ -33,8 +31,12 @@ class Seth::Store::Tomb
     true
   end
 
-  def start_watching
-
+  def start_watching_config
+    Thread.new do
+      notifier = INotify::Notifier.new
+      notifier.watch(@_config_path, :modify) { update_cache! }
+      notifier.run
+    end
   end
   
   def update_cache!
@@ -45,4 +47,6 @@ class Seth::Store::Tomb
         acc
       end
   end
+end
+end
 end

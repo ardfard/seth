@@ -9,8 +9,9 @@ module Seth::Store
     when :in_memory
       require 'seth/store/in_memory'
       return Seth::Store::InMemory.new
-    when :tomb
-      return Seth::Store::Tomb.new(config)
+    when :kv
+      require 'seth/store/kv'
+      return Seth::Store::KV.new(config)
     end
   end
 end

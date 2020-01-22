@@ -13,20 +13,17 @@ class Seth::Client
 
   # set value for key
   def set(key, value)
-    Rails.cache.delete(key)
     @_store.set(key, value)
   end
 
   # fetch value given key, return default if value not exists
   def fetch(key, default)
-    Rails.cache.fetch(key) do 
-      val = @_store.get(key)
-      if val.present? 
-        val
-      else
-        @_store.set(key, default)
-        default
-      end
+    val = @_store.get(key)
+    unless val.nil? 
+       val
+    else
+       @_store.set(key, default)
+      default
     end
   end
 

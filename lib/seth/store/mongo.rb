@@ -8,14 +8,18 @@ class Seth::Store::Mongo
   end
 
   def set(key, value)
+    Rails.cache.write(key, value)
     @_collection.updateOne({ key: key }, { value: value}, upsert: true) 
   end
 
   def get(key)
-    @_collection.findOne( { key: key } )
+    Rails.cache.fetch(key) do
+      @_collection.findOne( { key: key } )
+    end
   end
 
   def delete(key)
+    Rails.cache.delete(key)
     @_collection.deleteOne( { key: key } )
   end
 end
