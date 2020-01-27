@@ -2,7 +2,12 @@ require 'mongo'
 
 class Seth::Store::Mongo
   def initialize(config)
-    @_client = Mongo::Client.new(config[:host], database: config[:database])
+    @_client = Mongo::Client.new(config[:hosts], 
+                                 database: config[:database], 
+                                 user: config[:user], 
+                                 password: config[:password],
+                                 auth_source: config[:auth_source])
+
     @_collection = @_client.collection[:seth_store]
     @_collection.create_index({key: "hashed"}, {"unique" : "true"}) 
   end

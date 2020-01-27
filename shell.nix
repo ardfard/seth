@@ -12,6 +12,7 @@ stdenv.mkDerivation {
   buildInputs = [
     libxml2
     ruby
+    zookeeper
   ];
   shellHook = ''
     mkdir -p .nix-gems

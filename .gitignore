@@ -1,3 +1,4 @@
 .nix-gems
 Gemfile.lock
 tags*
+.zk/*
