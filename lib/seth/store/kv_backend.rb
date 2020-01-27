@@ -1,13 +1,16 @@
 module Seth
   module Store
     module KVBackend
-      def create(config)
+      def create(config, local_state)
         case config[:kv_backend] 
         when :consul
           require 'seth/store/kv_backend/consul'
-          return Consul.new(config)
+          raise "KVBackend Not implemented yet"
         when :zookeeper
-          requre 'seth/store/kv_backend/zookeeper'
+          require 'seth/store/kv_backend/zookeeper'
+          return Zookeeper.new(config, local_state)
+        else
+          raise "KV Backend not recognized."
         end
       end
     end
