@@ -2,14 +2,24 @@ require 'zk'
 
 class Watcher
   def initialize
-    @zk = ZK.new('192.168.241.134:2181', thread: :per_callback)
-    @path = '/seth'
-    @queue = Queue.new
+    config = {
+      znode: '/seth',
+      host: 'localhost:2181',
+      output_path: '/tmp/seth'
+    }
+
+    yield config
+
+    @zk = ZK.new(config[:host], thread: :per_callback)
+    @path = config[:znode]
+    @output = config[:output_path]
+    
   end
 
   def write_to_file(data)
-
-    @queue.push(data)
+    File.open(@output, 'w') do |f| 
+      f.puts(data)
+    end
   end
 
   def run
@@ -17,15 +27,19 @@ class Watcher
       puts 'event start'
       if event.node_changed? or event.node_created?
         data = @zk.get(@path, watch: true).first
+        write_to_file data
       end
     end
 
-    puts "start watching znode"
+    puts "Start watching znode"
+    @zk.stat(@path, watch: true)
 
-    puts "node"
-    puts @queue.pop
+    loop { sleep 1 }
   end
 end
 
 # run the watcher
-Watcher.new.run
+watcher = Watcher.new do |config|
+  config[:host] = ENV["SETH_ZK_HOST"]
+end
+watcher.run
